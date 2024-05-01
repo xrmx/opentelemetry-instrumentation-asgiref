@@ -57,7 +57,7 @@ class AsgirefInstrumentor(BaseInstrumentor):
         with self.tracer.start_as_current_span(span_name, kind=SpanKind.INTERNAL) as span:
             attributes = {
                 "exception.type": span_name,
-                "exception.stacktrace": traceback.format_stack(limit=self.stacktrace_limit),
+                "exception.stacktrace": traceback.format_stack(limit=self.stacktrace_limit)[:-1],
                 "exception.escaped": str(False),
             }
             span.add_event(name="exception", attributes=attributes)
