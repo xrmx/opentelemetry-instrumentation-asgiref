@@ -43,6 +43,7 @@ class AsgirefInstrumentor(BaseInstrumentor):
             tracer_provider,
             schema_url="https://opentelemetry.io/schemas/1.25.0",
         )
+        self.stacktrace_limit = kwargs.get("stacktrace_limit", 10)
 
         wrap_function_wrapper(asgiref.sync, "async_to_sync", self.__wrapper)
         wrap_function_wrapper(asgiref.sync, "sync_to_async", self.__wrapper)
@@ -56,7 +57,7 @@ class AsgirefInstrumentor(BaseInstrumentor):
         with self.tracer.start_as_current_span(span_name, kind=SpanKind.INTERNAL) as span:
             attributes = {
                 "exception.type": span_name,
-                "exception.stacktrace": traceback.format_stack(),
+                "exception.stacktrace": traceback.format_stack(limit=self.stacktrace_limit),
                 "exception.escaped": str(False),
             }
             span.add_event(name="exception", attributes=attributes)
