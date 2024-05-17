@@ -43,6 +43,7 @@ class TestAsgirefInstrumentor(TestBase):
         self.assertEqual(event.name, "exception")
         self.assertEqual(event.attributes["exception.type"], event_type)
         self.assertTrue(event.attributes["exception.stacktrace"])
+        self.assertTrue(isinstance(event.attributes["exception.stacktrace"], str))
         self.assertEqual(event.attributes["exception.escaped"], "False")
 
     def test_sync_to_async(self):
@@ -68,5 +69,3 @@ class TestAsgirefInstrumentor(TestBase):
         self.assertEqual(1, len(events))
         event = events[0]
         self.assert_event(event, "asgiref.sync.async_to_sync")
-
-
